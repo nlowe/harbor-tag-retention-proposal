@@ -105,7 +105,7 @@ type Filter interface {
     //      or if the policy does not care if the tag is kept or deleted
     //
     // Filters do not own any of the provided channels and should **not** close them under any circumstance
-    Process(input chan<- Tag, toKeep <-chan Tag, toDelete <-chan Tag, next <-chan Tag) error
+    Process(input <-chan Tag, toKeep chan<- Tag, toDelete chan<- Tag, next chan<- Tag) error
 }
 ```
 
@@ -130,7 +130,7 @@ type KeepLatestXFilter struct{
     counter map[string]int
 }
 
-func (f *KeepLatestXFilter) Process(input chan<- Tag, toKeep <-chan Tag, toDelete <-chan Tag, next <-chan Tag) error {
+func (f *KeepLatestXFilter) Process(input <-chan Tag, toKeep chan<- Tag, toDelete chan<- Tag, next chan<- Tag) error {
     for tag := range input {
         if !f.AppliesTo(tag) {
             next <- tag
