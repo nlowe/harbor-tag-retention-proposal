@@ -8,11 +8,34 @@ Discussion: [goharbor/harbor#5420](https://github.com/goharbor/harbor/issues/542
 
 ## Abstract
 
-[A short summary of the proposal.]
+Provide an automated method of deleting tags from Harbor based on various rules,
+which can be defined at the Server, Project, or Repository level. These rules
+can be configured by Harbor Admins, or, if enabled, Project Admins.
 
 ## Background
 
-[An introduction of the necessary background and the problem being solved by the proposed change.]
+Not many people have the luxury of unlimited storage. For images and tags that
+are effectively ephemeral (like those built and tagged for use only by an
+intermediate process in a CI pipeline) it does not make sense to keep these tags
+around for an extended period of time, consuming precious resources. Other tags,
+like those correlating to released or deployed software may need to be kept for
+an extended period of time or even forever for various legal or compliance
+reasons. While this is possible today via Harbor's API, Harbor Administrators
+could greatly benefit from having this functionality built-in to harbor itself.
+
+This seems to be a relatively popular issue in the community today:
+
+* [goharbor/harbor#1168](https://github.com/goharbor/harbor/issues/1168) - 强烈建议增加定时删除清理镜像策略 (Google Translate: "It is strongly recommended to add a timed delete cleanup mirroring strategy.")
+* [goharbor/harbor#4753](https://github.com/goharbor/harbor/issues/4753) - Can not automation clean old images and can not setup clean policy?
+* [goharbor/harbor#5085](https://github.com/goharbor/harbor/issues/5085) - Harbor registry tag cleaner tool
+
+A basic solution exists today as an out-of-tree project contributed by employees
+of Hyland Software. For details on this existing solution, please see
+[hylandsoftware/Harbor.Tagd](https://github.com/HylandSoftware/Harbor.Tagd).
+This solution runs external to Harbor and only supports one type of rule:
+"Always keep tags in this list: `[latest, a, b, ...]` and then keep the most recent `x` tags."
+These rules cannot be configured from Harbor itself and requires additional
+infrastructure to support and run the cleanup process.
 
 ## Proposal
 
