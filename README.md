@@ -95,7 +95,7 @@ type Filter interface {
     //      or if the policy does not care if the tag is kept or deleted
     //
     // Filters do not own any of the provided channels and should **not** close them under any circumstance
-    Process(input <-chan Tag, toKeep chan<- Tag, toDelete chan<- Tag, next chan<- Tag) error
+    Process(input <-chan Tag, toKeep, toDelete, next chan<- Tag) error
 
     // AppliesToProject determines if the filter is applicable for repositories and tags in the provided project
     AppliesToProject(p *Project) bool
@@ -133,7 +133,7 @@ type KeepLatestXFilter struct{
     Threshold int
 }
 
-func (f *KeepLatestXFilter) Process(input <-chan Tag, toKeep chan<- Tag, toDelete chan<- Tag, next chan<- Tag) error {
+func (f *KeepLatestXFilter) Process(input <-chan Tag, toKeep, toDelete, next chan<- Tag) error {
     count := 0
     for tag := range input {
         if !f.AppliesTo(tag) {
@@ -172,7 +172,34 @@ not have a tag with the same digest in the keep list. If it finds any such tags,
 they are removed from the delete list, as harbor will delete all tags with the
 same digest when a delete command is issued.
 
-Filter chains are constructed for each Project and Repository combination 
+### Built-In Rule Types
+
+These are the rules I propose we implement initially:
+
+* Keep Everything: Simply keep all tags in a project/repository
+* Delete Everything: Simply delete all tags in a project/repository
+
+Additionally, I propose the following rules be implemented that support
+optionally filtering tags by `Label`s added to them in Harbor:
+
+* Always Keep `x`: Always keep the tag matching the regular expression `x`
+* Always Delete `x`: Always delete the tag matching the regular expression `x`
+* Keep most-recent `x` tags: Keep only the most recent `x` Tags
+* Delete all tags older than `x`: Delete any tag that was created on or before `x` and keep everything else
+
+### Non-Goals
+
+This proposal does not seek to cover notifications related to tag retention. The
+existing implementation in
+[hylandsoftware/Harbor.Tagd](https://github.com/HylandSoftware/Harbor.Tagd)
+posts results to a slack-compatible webhook. As far as I'm aware, Harbor has no
+other notification capabilities other than what the backing docker registry
+supports. A separate proposal should be filed if users seek this functionality.
+
+This proposal does not allow for additional rule types to be added at runtime.
+Users who need additional rule types besides what Harbor will support should
+contribute to the project or maintain a fork of the project if these rules
+cannot be contributed back upstream.
 
 ## Rationale
 
