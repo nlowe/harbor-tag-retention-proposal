@@ -56,26 +56,9 @@ I propose the following solution:
 
 At the heart of Tag Retention is the `Rule`. These can be something as simple as
 "Keep Everything" to something as complex as "Delete all tags with any of these
-labels: `[foo, bar, ...]` older than `x` days." Rules are tied together in a
-`Filter Chain` in order of precedence. The filter chain is guaranteed to be
-handed tags in descending order of tag creation, grouped by repo and then by
-project. The filter chain may receive tags for any one of these projects, but
-once a tag for a project has been received the chain will continue to receive
-tags for that project (sorted by creation date descending) until no more tags
-remain for that project. This enables the creation of filters that need to know
-about the state of the while filter chain.
-
-For example, If I have two projects and two repos in each project:
-
-* `projectA/repo1`
-* `projectA/repo3`
-* `projectB/repo2`
-* `projectB/repo4`
-
-Let's say the filter chain receives tags for `projectB/repo2` first. It will
-then receive ***all*** tags for `projectB/repo2` until no more tags remain for
-that Project and Repository. The process repeats until there are no more
-projects and repositories left to process.
+labels: `[foo, bar, ...]` older than `x` days." Rules apply to one or more
+Projects, Repositories, and Tags. For each Project and Repository, the rules
+that apply to it are composed into a Filter Chain.
 
 ### The Filter Chain
 
@@ -85,10 +68,17 @@ policy to be tweaked at a per-project or per-repository level. Conversely,
 Project Administrators may be fine with the default policy but decide it is
 acceptable to keep fewer tags than what the default policy provides for. The
 Filter Chain is composed of one or more Filters in order of precedence, and
-always concludes with the filters that make up the default policy. A rough
-interface may look like this:
+always concludes with the filters that make up the default policy.
+
+A rough interface may look like this:
 
 ```go
+// Project represents a project in Harbor
+type Project struct{}
+
+// Repository represents a repo in a Harbor Project
+type Repository struct{}
+
 // Tag represents a tag on a project/repository combination
 type Tag struct{
     image string
@@ -106,8 +96,23 @@ type Filter interface {
     //
     // Filters do not own any of the provided channels and should **not** close them under any circumstance
     Process(input <-chan Tag, toKeep chan<- Tag, toDelete chan<- Tag, next chan<- Tag) error
+
+    // AppliesToProject determines if the filter is applicable for repositories and tags in the provided project
+    AppliesToProject(p *Project) bool
+
+    // AppliesToRepository determines if the filter is applicable for tags in the provided repository
+    AppliesToRepository(r *Repository) bool
 }
 ```
+
+Filter chains are constructed on a per-project and per-repository basis by
+collecting all filters that apply to the project/repository pair and ordering
+them by precedence. This way, a filter is guaranteed to only receive tags from
+the same project and repository for the entire duration of a call to `Process`.
+
+All operations performed `Process` should be thread-safe. The implementation may
+choose to apply the filter in one or more filter chains simultaneously (with
+different input and output channels).
 
 When processing a tag, Filters can make one of three decisions:
 
@@ -126,19 +131,17 @@ look something like this:
 ```go
 type KeepLatestXFilter struct{
     Threshold int
-
-    counter map[string]int
 }
 
 func (f *KeepLatestXFilter) Process(input <-chan Tag, toKeep chan<- Tag, toDelete chan<- Tag, next chan<- Tag) error {
+    count := 0
     for tag := range input {
         if !f.AppliesTo(tag) {
             next <- tag
             continue
         }
 
-        f.counter[tag.image]++
-        if f.counter[tag.image] > f.Threshold {
+        if ++count > f.Threshold {
             toDelete <- tag
         } else {
             toKeep <- next
@@ -146,7 +149,17 @@ func (f *KeepLatestXFilter) Process(input <-chan Tag, toKeep chan<- Tag, toDelet
     }
 }
 
-func (f *KeepLatestXFilter) AppliesTo(t Tag) bool {
+func (f *KeepLatestXFilter) AppliesToProject(p *Project) bool {
+    // TODO: Ensure filter applies to Project
+    return true
+}
+
+func (f *KeepLatestXFilter) AppliesToRepository(r *Repository) bool {
+    // TODO: Ensure filter applies to Repository
+    return true
+}
+
+func (f *KeepLatestXFilter) AppliesToTag(t Tag) bool {
     // TODO: Ensure filter applies to tag
     return true
 }
@@ -158,6 +171,8 @@ for all tags, the system checks to ensure that any tags in the delete list do
 not have a tag with the same digest in the keep list. If it finds any such tags,
 they are removed from the delete list, as harbor will delete all tags with the
 same digest when a delete command is issued.
+
+Filter chains are constructed for each Project and Repository combination 
 
 ## Rationale
 
