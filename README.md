@@ -136,7 +136,7 @@ type KeepLatestXFilter struct{
 func (f *KeepLatestXFilter) Process(input <-chan Tag, toKeep, toDelete, next chan<- Tag) error {
     count := 0
     for tag := range input {
-        if !f.AppliesTo(tag) {
+        if !f.AppliesToTag(tag) {
             next <- tag
             continue
         }
