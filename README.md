@@ -182,6 +182,7 @@ optionally filtering tags by `Label`s added to them in Harbor:
 
 * Always Keep `x`: Always keep the tag matching the regular expression `x`
 * Always Delete `x`: Always delete the tag matching the regular expression `x`
+* Keep if the most recent download was at least `x` days ago
 * Keep most-recent `x` tags: Keep only the most recent `x` Tags
 * Delete all tags older than `x`: Delete any tag that was created on or before `x` and keep everything else
 
