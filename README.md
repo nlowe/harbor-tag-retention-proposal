@@ -195,7 +195,7 @@ interact with the web interface or API to cleanup after themselves in order to
 stay under quota. Perhaps this is a good place to split this proposal, defining
 a separate proposal for the user interface portion of tag retention policies?
 
-### Non-Goals
+## Non-Goals
 
 This proposal does not seek to cover notifications related to tag retention. The
 existing implementation in
