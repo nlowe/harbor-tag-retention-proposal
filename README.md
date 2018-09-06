@@ -242,5 +242,8 @@ each phase of implementation.
 
 ## Open issues (if applicable)
 
-[A discussion of issues relating to this proposal for which the author does not
-know the solution. This section may be omitted if there are none.]
+[![GitHub issues](https://img.shields.io/github/issues-raw/nlowe/harbor-tag-retention-proposal.svg)](https://github.com/nlowe/harbor-tag-retention-proposal/issues)
+
+Please see the
+[issues](https://github.com/nlowe/harbor-tag-retention-proposal/issues) section
+of this repository for any open issues pertaining to this proposal.
