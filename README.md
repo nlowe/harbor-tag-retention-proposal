@@ -68,7 +68,8 @@ policy to be tweaked at a per-project or per-repository level. Conversely,
 Project Administrators may be fine with the default policy but decide it is
 acceptable to keep fewer tags than what the default policy provides for. The
 Filter Chain is composed of one or more Filters in order of precedence, and
-always concludes with the filters that make up the default policy.
+always concludes with the filters that make up the server-wide policy. If there
+is no server-wide policy, all tags are kept.
 
 A rough interface may look like this:
 
