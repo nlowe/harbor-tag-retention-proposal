@@ -185,6 +185,16 @@ optionally filtering tags by `Label`s added to them in Harbor:
 * Keep most-recent `x` tags: Keep only the most recent `x` Tags
 * Delete all tags older than `x`: Delete any tag that was created on or before `x` and keep everything else
 
+### UI
+
+Here's where I need some help. There's not a lot of prior work for this type of
+feature. Most "Retention" style systems seem to just enforce a storage or tag
+quota instead of allowing for granular rules. A lot of these quotas don't
+maintain themselves automatically for this reason, they rely on developers to
+interact with the web interface or API to cleanup after themselves in order to
+stay under quota. Perhaps this is a good place to split this proposal, defining
+a separate proposal for the user interface portion of tag retention policies?
+
 ### Non-Goals
 
 This proposal does not seek to cover notifications related to tag retention. The
