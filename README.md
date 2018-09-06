@@ -215,8 +215,14 @@ cannot be contributed back upstream.
 
 ## Compatibility
 
-[A discussion of the change with regard to the
-[compatibility guidelines](https://golang.org/doc/go1compat).]
+No configuration or migration of data should be required ahead of time prior to
+installing or upgrading to the first release of Harbor that includes Tag
+Retention Policies. Upon installing this release, the default tag policy will be
+to keep everything.
+
+Going forwards, changes to filter behavior must be backwards compatible. Any
+breaking changes in behavior of existing filters must be reserved for major
+version increments of Harbor and be sufficiently documented.
 
 ## Implementation
 
