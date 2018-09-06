@@ -211,7 +211,19 @@ cannot be contributed back upstream.
 
 ## Rationale
 
-[A discussion of alternate approaches and the trade offs, advantages, and disadvantages of the specified approach.]
+There are a few alternatives to this method. The first being the simplest: Allow
+quotas and optionally add automatic enforcement of quotas. Essentially, allow an
+Admin to define how much space a project / repository is allowed to consume.
+Upon hitting this quota new pushes are rejected until a developer cleans up old
+tags manually. Additionally, the system could try to perform automated cleanup
+by removing the oldest tags until the project or repository is under quota. I
+feel this route does not offer enough flexibility to be feasible.
+
+Alternatively, we could choose to not implement retention policies at all. Users
+already have the ability to delete tags programmatically via the API and are
+free to develop their own solutions for Tag Retention (a la
+[`hylandsoftware/Harbor.Tagd`](https://github.com/hylandsoftware/Harbor.Tagd)).
+However, I feel this feature is important enough to warrant inclusion in Harbor.
 
 ## Compatibility
 
