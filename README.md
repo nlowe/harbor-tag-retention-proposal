@@ -108,9 +108,9 @@ order of precedence, then all filters that apply to the specific project, then
 server-wide filters. This way, a filter is guaranteed to only receive tags from
 the same project and repository for the entire duration of a call to `Process`.
 
-All operations performed `Process` should be thread-safe. The implementation may
-choose to apply the filter in one or more filter chains simultaneously (with
-different input and output channels).
+All operations performed in `Process(...)` should be thread-safe. The
+implementation may choose to apply the filter in one or more filter chains
+simultaneously (with different input and output channels).
 
 When processing a tag, Filters can make one of three decisions:
 
