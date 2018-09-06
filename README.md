@@ -45,7 +45,7 @@ I propose the following solution:
 
 ### Definitions
 
-* `server`: An instance of `goharbor/harbor`
+* `server`: An instance of [`goharbor/harbor`](https://github.com/goharbor/harbor)
 * `project`: A project in a `server`, a collection of `repositories`
 * `repo` / `repository`: A repository in a `project`, a collection of `tag`s
 * `tag`: A tag on a docker image
