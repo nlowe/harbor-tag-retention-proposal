@@ -81,11 +81,7 @@ type Project struct{}
 type Repository struct{}
 
 // Tag represents a tag on a project/repository combination
-type Tag struct{
-    image string
-    name  string
-    //...
-}
+type Tag struct{}
 
 // Filter is a tag filter in a Retention Policy Filter Chain
 type Filter interface {
