@@ -226,8 +226,19 @@ version increments of Harbor and be sufficiently documented.
 
 ## Implementation
 
-[A description of the steps in the implementation, who will do them, and when.
-This should include a discussion of how the work fits into [Go's release cycle](https://golang.org/wiki/Go-Release-Cycle).]
+I propose this feature be implemented in 3 phases:
+
+1. Individual rule types and construction of the filter chain are fully implemented with tests
+2. API Extended to Add / Update / Remove filters and kick off retention
+3. User Interface Implementation
+
+This allows the feature to be worked on and reviewed in smaller chunks. For the
+first phase, this could either be one giant PR for the whole phase or smaller
+PRs for each newly implemented filter type or feature. More discussion is
+required on how to go about doing this.
+
+If this implementation plan is accepted, issues should be created for tracking
+each phase of implementation.
 
 ## Open issues (if applicable)
 
