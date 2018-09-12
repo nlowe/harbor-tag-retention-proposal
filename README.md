@@ -4,7 +4,7 @@ Author: Nathan Lowe
 
 Last Updated: ![GitHub last commit](https://img.shields.io/github/last-commit/nlowe/harbor-tag-retention-proposal.svg)
 
-Discussion: [goharbor/harbor#5420](https://github.com/goharbor/harbor/issues/5420)
+Discussion: [goharbor/harbor#5882](https://github.com/goharbor/harbor/issues/5882)
 
 ## Abstract
 
